@@ -82,7 +82,6 @@ struct es8316_priv {
 	bool muted;
 	bool hp_inserted;
 	bool spk_active_level;
-
 	int pwr_count;
 };
 
@@ -959,37 +958,35 @@ static int es8316_init_regs(struct snd_soc_codec *codec)
 
 static int es8316_suspend(struct snd_soc_codec *codec)
 {
+        struct es8316_priv *es8316 = snd_soc_codec_get_drvdata(codec);
+        int ret;
+
+        clk_disable_unprepare(es8316->mclk);
+
 	return 0;
 }
 
 static int es8316_resume(struct snd_soc_codec *codec)
 {
-	struct es8316_priv *es8316 = snd_soc_codec_get_drvdata(codec);
-	int ret;
+        struct regmap *regmap = dev_get_regmap(codec->dev, NULL);
+        struct es8316_priv *es8316;
+        int ret;
 
-	es8316_reset(codec); /* UPDATED BY DAVID,15-3-5 */
-	ret = snd_soc_read(codec, ES8316_CLKMGR_ADCDIV2_REG05);
-	if (!ret) {
-		es8316_init_regs(codec);
-		snd_soc_write(codec, ES8316_GPIO_SEL_REG4D, 0x00);
-		/* max debance time, enable interrupt, low active */
-		snd_soc_write(codec, ES8316_GPIO_DEBUNCE_INT_REG4E, 0xf3);
-		/* es8316_set_bias_level(codec, SND_SOC_BIAS_OFF); */
-		snd_soc_write(codec, ES8316_CPHP_OUTEN_REG17, 0x00);
-		snd_soc_write(codec, ES8316_DAC_PDN_REG2F, 0x11);
-		snd_soc_write(codec, ES8316_CPHP_LDOCTL_REG1B, 0x03);
-		snd_soc_write(codec, ES8316_CPHP_PDN2_REG1A, 0x22);
-		snd_soc_write(codec, ES8316_CPHP_PDN1_REG19, 0x06);
-		snd_soc_write(codec, ES8316_HPMIX_SWITCH_REG14, 0x00);
-		snd_soc_write(codec, ES8316_HPMIX_PDN_REG15, 0x33);
-		snd_soc_write(codec, ES8316_HPMIX_VOL_REG16, 0x00);
-		if (!es8316->hp_inserted)
-			snd_soc_write(codec, ES8316_SYS_PDN_REG0D, 0x3F);
-		snd_soc_write(codec, ES8316_SYS_LP1_REG0E, 0xFF);
-		snd_soc_write(codec, ES8316_SYS_LP2_REG0F, 0xFF);
-		snd_soc_write(codec, ES8316_CLKMGR_CLKSW_REG01, 0xF3);
-		snd_soc_write(codec, ES8316_ADC_PDN_LINSEL_REG22, 0xc0);
-	}
+        es8316 = snd_soc_codec_get_drvdata(codec);
+
+        ret = clk_prepare_enable(es8316->mclk);
+        if (ret) {
+                dev_err(codec->dev, "unable to enable clock\n");
+                return ret;
+        }
+
+        regcache_mark_dirty(regmap);
+        ret = regcache_sync(regmap);
+        if (ret) {
+                dev_err(codec->dev, "unable to sync regcache\n");
+                return ret;
+        }
+
 	return 0;
 }
 
