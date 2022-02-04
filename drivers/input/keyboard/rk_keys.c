@@ -62,6 +62,8 @@ struct rk_keys_button {
 	struct device *dev;
 	u32 type;		/* TYPE_GPIO, TYPE_ADC */
 	u32 code;		/* key code */
+	u32 code_wakeup;		/* key code for  wakeup*/
+	bool need_handle_wakeup;
 	const char *desc;	/* key label */
 	u32 state;		/* key up & down state */
 	int gpio;		/* gpio only */
@@ -114,12 +116,17 @@ void rk_send_wakeup_key(void)
 }
 EXPORT_SYMBOL(rk_send_wakeup_key);
 
+extern void rk_send_key_f_key_up(void);
+extern void rk_send_key_f_key_down(void);
+
+
 static void keys_timer(unsigned long _data)
 {
 	struct rk_keys_button *button = (struct rk_keys_button *)_data;
 	struct rk_keys_drvdata *pdata = dev_get_drvdata(button->dev);
 	struct input_dev *input = pdata->input;
 	int state;
+	static  int  index=0;
 
 	if (button->type == TYPE_GPIO)
 		state = !!((gpio_get_value(button->gpio) ? 1 : 0) ^
@@ -127,14 +134,38 @@ static void keys_timer(unsigned long _data)
 	else
 		state = !!button->adc_state;
 
+	
 	if (button->state != state) {
 		button->state = state;
-		input_event(input, EV_KEY, button->code, button->state);
-		key_dbg(pdata, "%skey[%s]: report event[%d] state[%d]\n",
-			button->type == TYPE_ADC ? "adc" : "gpio",
-			button->desc, button->code, button->state);
-		input_event(input, EV_KEY, button->code, button->state);
-		input_sync(input);
+		
+		if((button->code_wakeup)&&(button->need_handle_wakeup==true)){
+			button->need_handle_wakeup=false;
+			printk( "%skey[%s]: report event[%d] state[%d]   index=%d \n",
+				button->type == TYPE_ADC ? "adc" : "gpio",
+				button->desc, button->code_wakeup, button->state,index++);
+			input_event(input, EV_KEY, button->code_wakeup, button->state);
+			input_sync(input);
+		}else{
+			
+			if((button->code)==BTN_MODE){
+				if(button->state){	
+					rk_send_key_f_key_up();
+				}	
+				else{
+					rk_send_key_f_key_down();
+				}
+			}else{
+				printk( "%skey[%s]: report event[%d] state[%d]   index=%d \n",
+					button->type == TYPE_ADC ? "adc" : "gpio",
+				button->desc, button->code, button->state,index++);
+				input_event(input, EV_KEY, button->code, button->state);
+				input_sync(input);
+			}
+				
+			
+		}
+		
+		
 	}
 
 	if (state)
@@ -151,12 +182,22 @@ static irqreturn_t keys_isr(int irq, void *dev_id)
 
 	if (button->wakeup && pdata->in_suspend) {
 		button->state = 1;
-		key_dbg(pdata,
-			"wakeup: %skey[%s]: report event[%d] state[%d]\n",
+		if(button->code_wakeup){
+			button->need_handle_wakeup=true;
+			printk("wakeup: %skey[%s]: report event[%d] state[%d]\n",
+			(button->type == TYPE_ADC) ? "adc" : "gpio",
+			button->desc, button->code_wakeup, button->state);
+			input_event(input, EV_KEY, button->code_wakeup, button->state);
+			input_sync(input);
+		}else{
+			printk("wakeup: %skey[%s]: report event[%d] state[%d]\n",
 			(button->type == TYPE_ADC) ? "adc" : "gpio",
 			button->desc, button->code, button->state);
-		input_event(input, EV_KEY, button->code, button->state);
-		input_sync(input);
+			input_event(input, EV_KEY, button->code, button->state);
+			input_sync(input);
+			
+		}
+		
 	}
 	if (button->wakeup)
 		wake_lock_timeout(&pdata->wake_lock, WAKE_LOCK_JIFFIES);
@@ -189,11 +230,8 @@ static int rk_key_adc_iio_read(struct rk_keys_drvdata *data)
 
 	if (!channel)
 		return INVALID_ADVALUE;
-	ret = iio_read_channel_raw(channel, &val);
-	if (ret < 0) {
-		pr_err("read channel() error: %d\n", ret);
-		return ret;
-	}
+	iio_read_channel_raw(channel, &val);
+
 	return val;
 }
 
@@ -211,8 +249,6 @@ static void adc_key_poll(struct work_struct *work)
 		for (i = 0; i < ddata->nbuttons; i++) {
 			struct rk_keys_button *button = &ddata->button[i];
 
-			if (!button->adc_value)
-				continue;
 			if (result < button->adc_value + ddata->drift_advalue &&
 			    result > button->adc_value - ddata->drift_advalue)
 				button->adc_state = 1;
@@ -247,7 +283,7 @@ static int rk_keys_parse_dt(struct rk_keys_drvdata *pdata,
 	struct device_node *child_node;
 	struct iio_channel *chan;
 	int ret, gpio, i = 0;
-	u32 code, adc_value, flags, drift;
+	u32 code,code_wakeup, adc_value, flags, drift;
 
 	if (of_property_read_u32(node, "adc-drift", &drift))
 		pdata->drift_advalue = DRIFT_DEFAULT_ADVALUE;
@@ -269,6 +305,17 @@ static int rk_keys_parse_dt(struct rk_keys_drvdata *pdata,
 			goto error_ret;
 		}
 		pdata->button[i].code = code;
+		if (of_property_read_u32(child_node, "linux,code_wakeup", &code_wakeup)) {
+			dev_err(&pdev->dev,
+				"Missing linux,code_wakeup property in the DT.\n");
+			
+		}else{
+			
+			pdata->button[i].code_wakeup = code_wakeup;
+			pdata->button[i].need_handle_wakeup=false;
+		}
+		
+		
 		pdata->button[i].desc =
 		    of_get_property(child_node, "label", NULL);
 		pdata->button[i].type =
@@ -382,8 +429,12 @@ static int keys_probe(struct platform_device *pdev)
 
 		if (button->wakeup)
 			wakeup = 1;
-
-		input_set_capability(input, EV_KEY, button->code);
+		if(button->code != BTN_MODE)
+			input_set_capability(input, EV_KEY, button->code);
+		
+		if (button->code_wakeup) {
+			input_set_capability(input, EV_KEY, button->code_wakeup);
+		}
 	}
 
 	wake_lock_init(&ddata->wake_lock, WAKE_LOCK_SUSPEND, input->name);
@@ -484,12 +535,15 @@ static int keys_suspend(struct device *dev)
 {
 	struct rk_keys_drvdata *ddata = dev_get_drvdata(dev);
 	int i;
-
+	
 	ddata->in_suspend = true;
+	
 	if (device_may_wakeup(dev)) {
 		for (i = 0; i < ddata->nbuttons; i++) {
 			struct rk_keys_button *button = ddata->button + i;
-
+			
+			if(button->code_wakeup)
+				button->need_handle_wakeup=true;
 			if (button->wakeup)
 				enable_irq_wake(gpio_to_irq(button->gpio));
 		}

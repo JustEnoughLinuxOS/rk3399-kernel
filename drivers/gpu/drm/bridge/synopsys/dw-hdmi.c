@@ -3889,7 +3889,7 @@ int dw_hdmi_bind(struct device *dev, struct device *master,
 		    HDMI_PHY_I2CM_CTLINT_ADDR);
 
 	/* Re-init HPD polarity */
-	hdmi_writeb(hdmi, HDMI_PHY_HPD | HDMI_PHY_RX_SENSE, HDMI_PHY_POL0);
+	hdmi_writeb(hdmi, HDMI_PHY_RX_SENSE, HDMI_PHY_POL0);
 
 	if (hdmi->dev_type == RK3288_HDMI && hdmi->version == 0x200a)
 		hdmi->connector.ycbcr_420_allowed = false;

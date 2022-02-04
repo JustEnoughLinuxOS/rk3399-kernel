@@ -36,9 +36,7 @@
 #include <linux/console.h>
 #include <linux/iommu.h>
 #include <linux/of_reserved_mem.h>
-
 #include <drm/rockchip_drm.h>
-
 #include "rockchip_drm_drv.h"
 #include "rockchip_drm_fb.h"
 #include "rockchip_drm_fbdev.h"
@@ -1904,7 +1902,6 @@ static int rockchip_drm_platform_probe(struct platform_device *pdev)
 	 */
 	for (i = 0;; i++) {
 		struct device_node *iommu;
-
 		port = of_parse_phandle(np, "ports", i);
 		if (!port)
 			break;

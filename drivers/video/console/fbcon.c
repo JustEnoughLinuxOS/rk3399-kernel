@@ -79,7 +79,10 @@
 #include <asm/irq.h>
 
 #include "fbcon.h"
-
+#define __HDMI__
+#ifdef __HDMI__
+#include <linux/gpio.h>
+#endif
 #ifdef FBCONDEBUG
 #  define DPRINTK(fmt, args...) printk(KERN_DEBUG "%s: " fmt, __func__ , ## args)
 #else
@@ -187,12 +190,30 @@ static struct device *fbcon_device;
 static inline void fbcon_set_rotation(struct fb_info *info)
 {
 	struct fbcon_ops *ops = info->fbcon_par;
-
+#ifdef __HDMI__
+	if(gpio_get_value(54)==0)
+	{
+		if (!(info->flags & FBINFO_MISC_TILEBLITTING) &&
+		    ops->p->con_rotate < 3)
+			ops->rotate = ops->p->con_rotate;
+		else
+			ops->rotate = 0;		
+	}
+	else
+	{
+		if (!(info->flags & FBINFO_MISC_TILEBLITTING) &&
+		    ops->p->con_rotate < 4)
+			ops->rotate = ops->p->con_rotate;
+		else
+			ops->rotate = 0;
+	}
+#else
 	if (!(info->flags & FBINFO_MISC_TILEBLITTING) &&
 	    ops->p->con_rotate < 4)
 		ops->rotate = ops->p->con_rotate;
 	else
 		ops->rotate = 0;
+#endif
 }
 
 static void fbcon_rotate(struct fb_info *info, u32 rotate)
@@ -207,11 +228,27 @@ static void fbcon_rotate(struct fb_info *info, u32 rotate)
 
 	if (info == fb_info) {
 		struct display *p = &fb_display[ops->currcon];
-
+		#ifdef __HDMI__
+		if(gpio_get_value(54)==0)
+		{
+			if (rotate < 3)
+				p->con_rotate = rotate;
+			else
+				p->con_rotate = 0;	
+		}
+		else
+		{
+			if (rotate < 4)
+				p->con_rotate = rotate;
+			else
+				p->con_rotate = 0;
+		}
+		#else
 		if (rotate < 4)
 			p->con_rotate = rotate;
 		else
 			p->con_rotate = 0;
+		#endif
 
 		fbcon_modechanged(info);
 	}
@@ -234,6 +271,12 @@ static void fbcon_rotate_all(struct fb_info *info, u32 rotate)
 			continue;
 
 		p = &fb_display[vc->vc_num];
+		#ifdef __HDMI__
+		if(gpio_get_value(54)==0&&rotate==3)
+		{
+			rotate=0;
+		}
+		#endif
 		p->con_rotate = rotate;
 	}
 
@@ -349,7 +392,7 @@ static void fb_flashcursor(struct work_struct *work)
 	int c;
 	int mode;
 	int ret;
-
+return;
 	/* FIXME: we should sort out the unbind locking instead */
 	/* instead we just fail to flash the cursor if we can't get
 	 * the lock instead of blocking fbcon deinit */
@@ -1257,7 +1300,7 @@ static void fbcon_cursor(struct vc_data *vc, int mode)
 	struct fb_info *info = registered_fb[con2fb_map[vc->vc_num]];
 	struct fbcon_ops *ops = info->fbcon_par;
  	int c = scr_readw((u16 *) vc->vc_pos);
-
+return;
 	ops->cur_blink_jiffies = msecs_to_jiffies(vc->vc_cur_blink_ms);
 
 	if (fbcon_is_inactive(vc, info) || vc->vc_deccm != 1)

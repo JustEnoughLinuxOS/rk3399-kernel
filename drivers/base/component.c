@@ -443,6 +443,14 @@ int component_bind_all(struct device *master_dev, void *data)
 		return -EINVAL;
 
 	list_for_each_entry(c, &master->components, master_node) {
+		#ifdef __HDMI__
+		if(gpio_get_value(54)==0)
+		{
+			if (strstr(dev_name(c->dev), "dsi")) {
+				continue;
+			}
+		}
+		#endif
 		ret = component_bind(c, master, data);
 		if (ret)
 			break;

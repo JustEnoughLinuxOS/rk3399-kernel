@@ -38,6 +38,9 @@ struct pwm_fan_ctx {
 	struct thermal_cooling_device *cdev;
 };
 
+
+
+
 static int  __set_pwm(struct pwm_fan_ctx *ctx, unsigned long pwm)
 {
 	struct pwm_args pargs;
@@ -116,6 +119,31 @@ static struct attribute *pwm_fan_attrs[] = {
 };
 
 ATTRIBUTE_GROUPS(pwm_fan);
+
+
+
+struct device *fan_dev;
+int init_device_fan_done=0;
+
+void thermal_auto_fan_set_pwm(unsigned long pwm)
+{
+	struct pwm_fan_ctx *ctx = NULL;
+
+	if(!init_device_fan_done)
+		return;
+
+	if(fan_dev!=NULL){
+
+		ctx=dev_get_drvdata(fan_dev);
+		__set_pwm(ctx, pwm);
+		pwm_fan_update_state(ctx, pwm);
+
+	}
+
+
+}
+EXPORT_SYMBOL_GPL(thermal_auto_fan_set_pwm);
+
 
 /* thermal cooling device callbacks */
 static int pwm_fan_get_max_state(struct thermal_cooling_device *cdev,
@@ -253,7 +281,7 @@ static int pwm_fan_probe(struct platform_device *pdev)
 	duty_cycle = pargs.period - 1;
 	ctx->pwm_value = MAX_PWM;
 
-	ret = pwm_config(ctx->pwm, duty_cycle, pargs.period);
+	ret = pwm_config(ctx->pwm, duty_cycle/2, pargs.period);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to configure PWM\n");
 		return ret;
@@ -279,7 +307,7 @@ static int pwm_fan_probe(struct platform_device *pdev)
 		return ret;
 
 	ctx->pwm_fan_state = ctx->pwm_fan_max_state;
-	if (IS_ENABLED(CONFIG_THERMAL)) {
+	if (0){//IS_ENABLED(CONFIG_THERMAL)) {
 		cdev = thermal_of_cooling_device_register(pdev->dev.of_node,
 							  "pwm-fan", ctx,
 							  &pwm_fan_cooling_ops);
@@ -293,6 +321,8 @@ static int pwm_fan_probe(struct platform_device *pdev)
 		thermal_cdev_update(cdev);
 	}
 
+	fan_dev=&pdev->dev;
+	init_device_fan_done=1;
 	return 0;
 }
 

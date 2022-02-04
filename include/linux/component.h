@@ -1,6 +1,9 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
-
+#define __HDMI__
+#ifdef __HDMI__
+#include <linux/gpio.h>
+#endif
 struct device;
 
 struct component_ops {
