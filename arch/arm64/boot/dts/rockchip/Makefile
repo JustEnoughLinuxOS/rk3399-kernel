@@ -146,6 +146,9 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-evb-v14-multi-cam-avb.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-npu-evb-v10.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-npu-evb-v10-multi-cam.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rg552-linux.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3326-rg351p-linux.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3326-rg351v-linux.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3326-rg351mp-linux.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-roc-pc-mezzanine.dts
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-roc-pc-plus.dts
 
