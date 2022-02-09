@@ -162,7 +162,7 @@ static const struct snd_kcontrol_new es8316_snd_controls[] = {
 
 	/* DAC Digital controls */
 	SOC_DOUBLE_R_TLV("DAC Playback Volume", ES8316_DAC_VOLL_REG33,
-			 ES8316_DAC_VOLR_REG34, 0x06, 0xC0, 1, dac_vol_tlv),
+			 ES8316_DAC_VOLR_REG34, 0, 0xC0, 1, dac_vol_tlv),
 
 	SOC_SINGLE("Enable DAC Soft Ramp", ES8316_DAC_SET1_REG30, 4, 1, 1),
 	SOC_SINGLE("DAC Soft Ramp Rate", ES8316_DAC_SET1_REG30, 2, 4, 0),
@@ -917,8 +917,8 @@ static int es8316_init_regs(struct snd_soc_codec *codec)
 	snd_soc_write(codec, ES8316_ADC_DMIC_REG25, 0x08);
 	snd_soc_write(codec, ES8316_DAC_SET2_REG31, 0x20);
 	snd_soc_write(codec, ES8316_DAC_SET3_REG32, 0x00);
-	snd_soc_write(codec, ES8316_DAC_VOLL_REG33, 0x08);
-	snd_soc_write(codec, ES8316_DAC_VOLR_REG34, 0x06);
+	snd_soc_write(codec, ES8316_DAC_VOLL_REG33, 0x00);
+	snd_soc_write(codec, ES8316_DAC_VOLR_REG34, 0x00);
 	snd_soc_write(codec, ES8316_SDP_ADCFMT_REG0A, 0x00);
 	snd_soc_write(codec, ES8316_SDP_DACFMT_REG0B, 0x00);
 	snd_soc_write(codec, ES8316_SYS_VMIDLOW_REG10, 0x11);
