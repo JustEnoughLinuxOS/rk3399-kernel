@@ -319,6 +319,14 @@
 			opp-microvolt-L2 = <1050000>;
 			opp-microvolt-L3 = <1025000>;
 		};
+                opp-900000000 {
+                        opp-hz = /bits/ 64 <900000000>;
+                        opp-microvolt = <1100000>;
+                        opp-microvolt-L0 = <1100000>;
+                        opp-microvolt-L1 = <1075000>;
+                        opp-microvolt-L2 = <1050000>;
+                        opp-microvolt-L3 = <1025000>;
+                };
 	};
 
 	dmc_opp_table: opp-table3 {

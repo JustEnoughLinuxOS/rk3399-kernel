@@ -585,6 +585,16 @@
 		opp-microvolt-L4 = <1225000 1225000 1300000>;
 		clock-latency-ns = <40000>;
 	};
+        opp-2016000000 {
+                opp-hz = /bits/ 64 <2016000000>;
+                opp-microvolt = <1300000 1300000 1300000>;
+                opp-microvolt-L0 = <1300000 1300000 1300000>;
+                opp-microvolt-L1 = <1275000 1275000 1300000>;
+                opp-microvolt-L2 = <1250000 1250000 1300000>;
+                opp-microvolt-L3 = <1225000 1225000 1300000>;
+                opp-microvolt-L4 = <1225000 1225000 1300000>;
+                clock-latency-ns = <40000>;
+        };
 };
 
 
