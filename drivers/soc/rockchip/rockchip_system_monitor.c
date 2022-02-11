@@ -1200,40 +1200,6 @@ out:
 }
 
 
-void thermal_auto_fan_set_pwm(unsigned long pwm);
-int auto_change_fan_speed_switch=1;
-
-int fan_speed_level_old=0;
-int fan_speed_level_count=0;
-int fan_speed_level=0;
-
-void rockchip_system_monitor_temp_change_fan_speed(int cpu_temp){
-	
-	fan_speed_level_count++;
-	if(cpu_temp>30000){
-
-		if(cpu_temp >= 45000){
-			fan_speed_level=255;
-		}else if(cpu_temp >= 40000){
-			fan_speed_level=200;
-		}else if(cpu_temp >= 35000){
-			fan_speed_level=120;
-		}else{
-			fan_speed_level=0;
-		}
-
-		if((fan_speed_level_old!=fan_speed_level)||(fan_speed_level_count>20))
-		{
-			fan_speed_level_old=fan_speed_level;
-			//thermal_auto_fan_set_pwm(255-fan_speed_level);
-			fan_speed_level_count=0;
-		}
-		
-	}
-}
-
-
-
 static void rockchip_system_monitor_temp_cpu_on_off(int temp)
 {
 	bool is_temp_offline;
@@ -1270,9 +1236,6 @@ static void rockchip_system_monitor_thermal_update(void)
 	list_for_each_entry(info, &monitor_dev_list, node)
 		rockchip_system_monitor_wide_temp_adjust(info, temp);
 	up_read(&mdev_list_sem);
-	
-	if(auto_change_fan_speed_switch)
-		rockchip_system_monitor_temp_change_fan_speed(temp);
 	
 	rockchip_system_monitor_temp_cpu_on_off(temp);
 
