@@ -1299,7 +1299,7 @@
 	supports-emmc;
 	non-removable;
 //	keep-power-in-suspend;
-	status = "disabled";
+	status = "okay";
 };
 
 &spdif {
