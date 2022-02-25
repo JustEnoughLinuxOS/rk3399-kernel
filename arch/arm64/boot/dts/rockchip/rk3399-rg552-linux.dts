@@ -194,11 +194,6 @@
 		};
         };
 
-	aliases {
-		ethernet0 = &gmac;
-		uart0 = &uart0;
-	};
-
 	xin32k: xin32k {
 		compatible = "fixed-clock";
 		clock-frequency = <32768>;
@@ -463,31 +458,6 @@
 		status = "okay";
 	};
 
-	sdio_pwrseq: sdio-pwrseq {
-		compatible = "mmc-pwrseq-simple";
-		clocks = <&rk808 1>;
-		clock-names = "ext_clock";
-		pinctrl-names = "default";
-		pinctrl-0 = <&wifi_enable_h>;
-
-		/*
-		 * On the module itself this is one of these (depending
-		 * on the actual card populated):
-		 * - SDIO_RESET_L_WL_REG_ON
-		 * - PDN (power down when low)
-		 */
-		reset-gpios = <&gpio2 RK_PC1 GPIO_ACTIVE_LOW>;
-	};
-
-	wireless-wlan {
-		compatible = "wlan-platdata";
-		rockchip,grf = <&grf>;
-		wifi_chip_type = "rtl8188fu";
-		sdio_vref = <1800>;
-		WIFI,host_wake_irq = <&gpio0 RK_PA3 GPIO_ACTIVE_HIGH>;
-		status = "okay";
-	};
-
 	wireless-bluetooth {
 		compatible = "bluetooth-platdata";
 		clocks = <&rk808 1>;
@@ -503,6 +473,18 @@
 		BT,wake_host_irq = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
+
+	wireless_wlan: wireless-wlan {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		gpio = <&gpio3 RK_PC1 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&wifi_pwr>;
+		regulator-name = "wifi_enable";
+		regulator-always-on;
+		regulator-boot-on;
+	};
+
 
 	backlight: backlight {
 		compatible = "pwm-backlight";
@@ -721,6 +703,7 @@
 		};
 
 		route_dp: route-dp {
+                        status = "okay";
 			connect = <&vopl_out_dp>;
 		};
 	};
@@ -1302,12 +1285,6 @@
 	status = "okay";
 };
 
-&spdif {
-	status = "disabled";
-	pinctrl-0 = <&spdif_bus_1>;
-	#sound-dai-cells = <0>;
-};
-
 &threshold {
 	temperature = <75000>;
 };
@@ -1381,12 +1358,6 @@
 		phy-supply = <&vcc5v0_host>;
 		status = "okay";
 	};
-};
-
-&uart0 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart0_xfer &uart0_cts>;
-	status = "disabled";
 };
 
 &uart2 {
@@ -1482,13 +1453,6 @@
 		vsel2_gpio: vsel2-gpio {
 			rockchip,pins =
 				<1 RK_PB6 RK_FUNC_GPIO &pcfg_pull_down>;
-		};
-	};
-
-	sdio-pwrseq {
-		wifi_enable_h: wifi-enable-h {
-			rockchip,pins =
-				<0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
