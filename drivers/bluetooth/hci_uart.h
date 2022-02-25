@@ -84,7 +84,8 @@ struct hci_uart {
 	struct work_struct	write_work;
 
 	const struct hci_uart_proto *proto;
-	rwlock_t		proto_lock;	/* Stop work for proto close */
+	struct rw_semaphore	proto_lock;	/* Stop work for proto close */
+	struct semaphore 	tx_sem;	/* semaphore for tx */
 	void			*priv;
 
 	struct sk_buff		*tx_skb;
@@ -110,6 +111,7 @@ void hci_uart_unregister_device(struct hci_uart *hu);
 
 int hci_uart_tx_wakeup(struct hci_uart *hu);
 int hci_uart_init_ready(struct hci_uart *hu);
+void hci_uart_init_work(struct work_struct *work);
 void hci_uart_init_tty(struct hci_uart *hu);
 void hci_uart_set_baudrate(struct hci_uart *hu, unsigned int speed);
 bool hci_uart_has_flow_control(struct hci_uart *hu);

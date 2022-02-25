@@ -194,32 +194,11 @@
 		};
         };
 
-	aliases {
-		ethernet0 = &gmac;
-		uart0 = &uart0;
-	};
-
 	xin32k: xin32k {
 		compatible = "fixed-clock";
 		clock-frequency = <32768>;
 		clock-output-names = "xin32k";
 		#clock-cells = <0>;
-	};
-
-	clkin_gmac: external-gmac-clock {
-		compatible = "fixed-clock";
-		clock-frequency = <125000000>;
-		clock-output-names = "clkin_gmac";
-		#clock-cells = <0>;
-	};
-
-	dc_12v: dc-12v {
-		compatible = "regulator-fixed";
-		regulator-name = "dc_12v";
-		regulator-always-on;
-		regulator-boot-on;
-		regulator-min-microvolt = <12000000>;
-		regulator-max-microvolt = <12000000>;
 	};
 
 	vcc_sys: vcc-sys {
@@ -228,7 +207,6 @@
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		regulator-always-on;
-		vin-supply = <&dc_12v>;
 	};
 
 	vcc_phy: vcc-phy-regulator {
@@ -445,24 +423,6 @@
 		};
 	};
 
-	spdif-sound {
-		status = "disabled";
-		compatible = "simple-audio-card";
-		simple-audio-card,name = "ROCKCHIP,SPDIF";
-		simple-audio-card,cpu {
-			sound-dai = <&spdif>;
-		};
-		simple-audio-card,codec {
-			sound-dai = <&spdif_out>;
-		};
-	};
-
-	spdif_out: spdif-out {
-		compatible = "linux,spdif-dit";
-		#sound-dai-cells = <0>;
-		status = "okay";
-	};
-
 	sdio_pwrseq: sdio-pwrseq {
 		compatible = "mmc-pwrseq-simple";
 		clocks = <&rk808 1>;
@@ -479,15 +439,6 @@
 		reset-gpios = <&gpio2 RK_PC1 GPIO_ACTIVE_LOW>;
 	};
 
-	wireless-wlan {
-		compatible = "wlan-platdata";
-		rockchip,grf = <&grf>;
-		wifi_chip_type = "rtl8188fu";
-		sdio_vref = <1800>;
-		WIFI,host_wake_irq = <&gpio0 RK_PA3 GPIO_ACTIVE_HIGH>;
-		status = "okay";
-	};
-
 	wireless-bluetooth {
 		compatible = "bluetooth-platdata";
 		clocks = <&rk808 1>;
@@ -502,6 +453,15 @@
 		BT,wake_gpio     = <&gpio2 RK_PD3 GPIO_ACTIVE_HIGH>;
 		BT,wake_host_irq = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
 		status = "okay";
+	wireless_wlan: wireless-wlan {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		gpio = <&gpio3 RK_PC1 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&wifi_pwr>;
+		regulator-name = "wifi_enable";
+		regulator-always-on;
+		regulator-boot-on;
 	};
 
 	backlight: backlight {
@@ -597,7 +557,6 @@
         };
 };
 
-
 &cpu_l0 {
 	cpu-supply = <&vdd_cpu_l>;
 };
@@ -622,8 +581,9 @@
 	cpu-supply = <&vdd_cpu_b>;
 };
 
-&dfi {
+&cdn_dp {
 	status = "okay";
+<<<<<<< HEAD
 };
 
 &dmc {
@@ -704,6 +664,9 @@
                         opp-hz = /bits/ 64 <856000000>;
                         opp-microvolt = <900000>;
                 };
+=======
+	extcon = <&fusb0>;
+>>>>>>> 0d3c698e26d41755f8cd873e079ac446af91d7e2
 };
 
 &display_subsystem {
@@ -721,6 +684,11 @@
 		};
 
 		route_dp: route-dp {
+			connect = <&vopl_out_dp>;
+		};
+
+		route_dp: route-dp {
+			status = "okay";
 			connect = <&vopl_out_dp>;
 		};
 	};
@@ -1073,6 +1041,7 @@
 	status = "okay";
 };
 
+<<<<<<< HEAD
 &gmac {
 	phy-supply = <&vcc_phy>;
 	phy-mode = "rgmii";
@@ -1091,6 +1060,8 @@
 	status = "disabled";
 };
 
+=======
+>>>>>>> 0d3c698e26d41755f8cd873e079ac446af91d7e2
 &gpu {
 	status = "okay";
 	mali-supply = <&vdd_gpu>;
@@ -1115,6 +1086,7 @@
 	panel@0 {
 		compatible = "elida,kd35t133", "simple-panel-dsi";
 		reg = <0>;
+		rotation = <90>;
 
 		/* pwm0 backlight */
 		backlight = <&backlight>;
@@ -1276,8 +1248,12 @@
 	disable-wp;
 	cap-sd-highspeed;
 	cap-sdio-irq;
+<<<<<<< HEAD
 //	keep-power-in-suspend;
 //	mmc-pwrseq = <&sdio_pwrseq>;
+=======
+	keep-power-in-suspend;
+>>>>>>> 0d3c698e26d41755f8cd873e079ac446af91d7e2
 	card-detect-delay = <800>;
 	cd-gpios = <&gpio2 RK_PC1 GPIO_ACTIVE_LOW>; /*[> CD GPIO <]*/
 	num-slots = <1>;
@@ -1300,12 +1276,6 @@
 	non-removable;
 //	keep-power-in-suspend;
 	status = "okay";
-};
-
-&spdif {
-	status = "disabled";
-	pinctrl-0 = <&spdif_bus_1>;
-	#sound-dai-cells = <0>;
 };
 
 &threshold {
@@ -1358,6 +1328,13 @@
 
 &u2phy0 {
 	status = "okay";
+<<<<<<< HEAD
+=======
+
+	// MRFIXIT NOTE: TO TEST
+//	/delete-property/ power-domains;
+
+>>>>>>> 0d3c698e26d41755f8cd873e079ac446af91d7e2
 	extcon = <&fusb0>;
 
 	u2phy0_otg: otg-port {
@@ -1373,6 +1350,12 @@
 &u2phy1 {
 	status = "okay";
 
+<<<<<<< HEAD
+=======
+	// MRFIXIT NOTE: TO TEST
+//	/delete-property/ power-domains;
+
+>>>>>>> 0d3c698e26d41755f8cd873e079ac446af91d7e2
 	u2phy1_otg: otg-port {
 		status = "okay";
 	};
@@ -1381,12 +1364,6 @@
 		phy-supply = <&vcc5v0_host>;
 		status = "okay";
 	};
-};
-
-&uart0 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart0_xfer &uart0_cts>;
-	status = "disabled";
 };
 
 &uart2 {
@@ -1492,6 +1469,7 @@
 		};
 	};
 
+<<<<<<< HEAD
 	usb2 {
 		host_vbus_drv: host-vbus-drv {
 			rockchip,pins =
@@ -1499,6 +1477,8 @@
 		};
 	};
 
+=======
+>>>>>>> 0d3c698e26d41755f8cd873e079ac446af91d7e2
 	wireless-wlan {
 		wifi_pwr: wifi-pwr {
 			rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
@@ -1599,6 +1579,7 @@
 		<&gpio1 RK_PB6 GPIO_ACTIVE_HIGH>;
 };
 
+<<<<<<< HEAD
 &pinctrl {
 	btns {
 		btn_pins: btn-pins {
@@ -1639,4 +1620,10 @@
 				<4 RK_PD3 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};		
+=======
+&sdio0_clk {
+	rockchip,pins =
+		<2 25 RK_FUNC_1 &pcfg_pull_none>,
+		<2 17 RK_FUNC_GPIO &pcfg_pull_up>;
+>>>>>>> 0d3c698e26d41755f8cd873e079ac446af91d7e2
 };
