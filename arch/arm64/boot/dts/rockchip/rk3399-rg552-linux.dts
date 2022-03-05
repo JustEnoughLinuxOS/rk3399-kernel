@@ -638,18 +638,18 @@
                 SYS_STATUS_REBOOT       666000
                 SYS_STATUS_SUSPEND      328000
                 SYS_STATUS_VIDEO_1080P  666000
-                SYS_STATUS_VIDEO_4K     856000
-                SYS_STATUS_VIDEO_4K_10B 856000
-                SYS_STATUS_PERFORMANCE  856000
-                SYS_STATUS_BOOST        856000
-                SYS_STATUS_DUALVIEW     856000
-                SYS_STATUS_ISP          856000
+                SYS_STATUS_VIDEO_4K     933000
+                SYS_STATUS_VIDEO_4K_10B 933000
+                SYS_STATUS_PERFORMANCE  933000
+                SYS_STATUS_BOOST        933000
+                SYS_STATUS_DUALVIEW     933000
+                SYS_STATUS_ISP          933000
         >;
         vop-bw-dmc-freq = <
         /* min_bw(MB/s) max_bw(MB/s) freq(KHz) */
                 0       762      416000
                 763     3012     666000
-                3013    99999    856000
+                3013    99999    933000
         >;
 
         auto-min-freq = <328000>;
@@ -705,6 +705,11 @@
                         opp-hz = /bits/ 64 <856000000>;
                         opp-microvolt = <900000>;
                 };
+                opp-933000000 {
+                        opp-hz = /bits/ 64 <933000000>;
+                        opp-microvolt = <900000>;
+                };
+
 };
 
 &display_subsystem {
