@@ -254,79 +254,81 @@
 
 	gpu_opp_table: opp-table2 {
 		compatible = "operating-points-v2";
-
-		rockchip,thermal-zone = "cpu";
-		rockchip,temp-hysteresis = <5000>;
-		rockchip,low-temp = <0>;
-		rockchip,low-temp-min-volt = <900000>;
-
-		nvmem-cells = <&gpu_leakage>;
-		nvmem-cell-names = "gpu_leakage";
-
-		rockchip,pvtm-voltage-sel = <
-			0        121000   0
-			121001   125500   1
-			125501   128500   2
-			128501   999999   3
-		>;
-		rockchip,pvtm-freq = <200000>;
-		rockchip,pvtm-volt = <900000>;
-		rockchip,pvtm-ch = <3 0>;
-		rockchip,pvtm-sample-time = <1000>;
-		rockchip,pvtm-number = <10>;
-		rockchip,pvtm-error = <1000>;
-		rockchip,pvtm-ref-temp = <41>;
-		rockchip,pvtm-temp-prop = <46 12>;
-		rockchip,pvtm-thermal-zone = "gpu";
+		rockchip,thermal-zone = "soc-thermal";
+		rockchip,temp-hysteresis = <0x1388>;
+		rockchip,low-temp = <0x2710>;
+		rockchip,low-temp-min-volt = <0xdbba0>;
+		nvmem-cells = <0xcf 0xd0>;
+		nvmem-cell-names = "gpu_leakage\0performance";
+		clocks = <0x08 0x05>;
+		rockchip,pvtm-freq = <0x30d40>;
+		rockchip,pvtm-volt = <0xdbba0>;
+		rockchip,pvtm-ch = <0x03 0x00>;
+		rockchip,pvtm-sample-time = <0x3e8>;
+		rockchip,pvtm-number = <0x0a>;
+		rockchip,pvtm-error = <0x3e8>;
+		rockchip,pvtm-ref-temp = <0x29>;
+		rockchip,pvtm-temp-prop = <0x2e 0x0c>;
+		rockchip,pvtm-thermal-zone = "gpu-thermal";
+		phandle = <0xa1>;
 
 		opp-200000000 {
-			opp-hz = /bits/ 64 <200000000>;
-			opp-microvolt = <825000>;
-			opp-microvolt-L0 = <825000>;
-			opp-microvolt-L1 = <825000>;
-			opp-microvolt-L2 = <825000>;
-			opp-microvolt-L3 = <825000>;
+			opp-hz = <0x00 0xbebc200>;
+			opp-microvolt = <0xc96a8>;
+			opp-microvolt-L20 = <0xd59f8>;
+			opp-microvolt-L0 = <0xc96a8>;
+			opp-microvolt-L1 = <0xc96a8>;
+			opp-microvolt-L2 = <0xc96a8>;
+			opp-microvolt-L3 = <0xc96a8>;
 		};
+
 		opp-300000000 {
-			opp-hz = /bits/ 64 <300000000>;
-			opp-microvolt = <825000>;
-			opp-microvolt-L0 = <825000>;
-			opp-microvolt-L1 = <825000>;
-			opp-microvolt-L2 = <825000>;
-			opp-microvolt-L3 = <825000>;
+			opp-hz = <0x00 0x11e1a300>;
+			opp-microvolt = <0xc96a8>;
+			opp-microvolt-L20 = <0xd59f8>;
+			opp-microvolt-L0 = <0xc96a8>;
+			opp-microvolt-L1 = <0xc96a8>;
+			opp-microvolt-L2 = <0xc96a8>;
+			opp-microvolt-L3 = <0xc96a8>;
 		};
+
 		opp-400000000 {
-			opp-hz = /bits/ 64 <400000000>;
-			opp-microvolt = <825000>;
-			opp-microvolt-L0 = <825000>;
-			opp-microvolt-L1 = <825000>;
-			opp-microvolt-L2 = <825000>;
-			opp-microvolt-L3 = <825000>;
+			opp-hz = <0x00 0x17d78400>;
+			opp-microvolt = <0xc96a8>;
+			opp-microvolt-L20 = <0xd59f8>;
+			opp-microvolt-L0 = <0xc96a8>;
+			opp-microvolt-L1 = <0xc96a8>;
+			opp-microvolt-L2 = <0xc96a8>;
+			opp-microvolt-L3 = <0xc96a8>;
 		};
+
 		opp-600000000 {
-			opp-hz = /bits/ 64 <600000000>;
-			opp-microvolt = <925000>;
-			opp-microvolt-L0 = <925000>;
-			opp-microvolt-L1 = <925000>;
-			opp-microvolt-L2 = <900000>;
-			opp-microvolt-L3 = <900000>;
+			opp-hz = <0x00 0x23c34600>;
+			opp-microvolt = <0xe1d48>;
+			opp-microvolt-L20 = <0xee098>;
+			opp-microvolt-L0 = <0xe1d48>;
+			opp-microvolt-L1 = <0xe1d48>;
+			opp-microvolt-L2 = <0xdbba0>;
+			opp-microvolt-L3 = <0xdbba0>;
 		};
+
 		opp-800000000 {
-			opp-hz = /bits/ 64 <800000000>;
-			opp-microvolt = <1100000>;
-			opp-microvolt-L0 = <1100000>;
-			opp-microvolt-L1 = <1075000>;
-			opp-microvolt-L2 = <1050000>;
-			opp-microvolt-L3 = <1025000>;
+			opp-hz = <0x00 0x2faf0800>;
+			opp-microvolt = <0x10c8e0>;
+			opp-microvolt-L0 = <0x10c8e0>;
+			opp-microvolt-L1 = <0x106738>;
+			opp-microvolt-L2 = <0x100590>;
+			opp-microvolt-L3 = <0xfa3e8>;
 		};
-                opp-900000000 {
-                        opp-hz = /bits/ 64 <900000000>;
-                        opp-microvolt = <1100000>;
-                        opp-microvolt-L0 = <1100000>;
-                        opp-microvolt-L1 = <1075000>;
-                        opp-microvolt-L2 = <1050000>;
-                        opp-microvolt-L3 = <1025000>;
-                };
+
+		opp-900000000 {
+			opp-hz = <0x00 0x35a4e900>;
+			opp-microvolt = <0x10c8e0>;
+			opp-microvolt-L0 = <0x10c8e0>;
+			opp-microvolt-L1 = <0x106738>;
+			opp-microvolt-L2 = <0x100590>;
+			opp-microvolt-L3 = <0xfa3e8>;
+		};
 	};
 
 	dmc_opp_table: opp-table3 {
