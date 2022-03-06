@@ -579,13 +579,12 @@
 		clock-latency-ns = <40000>;
 	};
 
-	opp-2208000000 {
-		opp-hz = /bits/ 64 <2208000000>;
-		opp-microvolt = <1400000>;
-		opp-microvolt-L0 = <1400000>;
-		opp-microvolt-L1 = <1375000>;
-		opp-microvolt-L2 = <1350000>;
-		opp-microvolt-L3 = <1325000>;
+	opp-2184000000 {
+		opp-hz = /bits/ 64 <2184000000>;
+                opp-microvolt-L0 = <1350000>;
+                opp-microvolt-L1 = <1325000>;
+                opp-microvolt-L2 = <1300000>;
+                opp-microvolt-L3 = <1275000>;
 		clock-latency-ns = <40000>;
 	};
 };
