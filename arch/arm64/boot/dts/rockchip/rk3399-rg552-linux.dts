@@ -545,25 +545,26 @@
 
 
 &cluster0_opp {
-		opp-1512000000 {
-			opp-hz = <0x00 0x5a1f4a00>;
-			opp-microvolt = <0x118c30>;
-			opp-microvolt-L0 = <0x118c30>;
-			opp-microvolt-L1 = <0x118c30>;
-			opp-microvolt-L2 = <0x118c30>;
-			opp-microvolt-L3 = <0x118c30>;
-			clock-latency-ns = <0x9c40>;
-		};
+	opp-1512000000 {
+		opp-hz = /bits/ 64 <1512000000>;
+		opp-microvolt = <1200000 1200000 1250000>;
+		opp-microvolt-L0 = <1200000 1200000 1250000>;
+		opp-microvolt-L1 = <1175000 1175000 1250000>;
+		opp-microvolt-L2 = <1150000 1150000 1250000>;
+		opp-microvolt-L3 = <1125000 1125000 1250000>;
+		clock-latency-ns = <40000>;
+	};
 
-		opp-1800000000 {
-			opp-hz = <0x00 0x6b49d200>;
-			opp-microvolt = <0x149970>;
-			opp-microvolt-L0 = <0x149970>;
-			opp-microvolt-L1 = <0x149970>;
-			opp-microvolt-L2 = <0x149970>;
-			opp-microvolt-L3 = <0x149970>;
-			clock-latency-ns = <0x9c40>;
-		};
+	opp-18000000000 {
+		opp-hz = /bits/ 64 <1800000000>;
+		opp-microvolt = <1350000>;
+		opp-microvolt-L0 = <1350000>;
+		opp-microvolt-L1 = <1325000>;
+		opp-microvolt-L2 = <1300000>;
+		opp-microvolt-L3 = <1275000>;
+		clock-latency-ns = <40000>;
+	};
+
 };
 
 &cluster1_opp {
@@ -577,24 +578,15 @@
 		opp-microvolt-L4 = <1225000 1225000 1300000>;
 		clock-latency-ns = <40000>;
 	};
-	opp-2016000000 {
-		opp-hz = <0x00 0x7829b800>;
-		opp-microvolt = <0x1312d0>;
-		opp-microvolt-L0 = <0x1312d0>;
-		opp-microvolt-L1 = <0x1312d0>;
-		opp-microvolt-L2 = <0x1312d0>;
-		opp-microvolt-L3 = <0x1312d0>;
-		clock-latency-ns = <0x9c40>;
-	};
 
-	opp-2100000000 {
-		opp-hz = <0x00 0x7D2B7500>;
-		opp-microvolt = <0x149970>;
-		opp-microvolt-L0 = <0x149970>;
-		opp-microvolt-L1 = <0x149970>;
-		opp-microvolt-L2 = <0x149970>;
-		opp-microvolt-L3 = <0x149970>;
-		clock-latency-ns = <0x9c40>;
+	opp-2208000000 {
+		opp-hz = /bits/ 64 <2208000000>;
+		opp-microvolt = <1400000>;
+		opp-microvolt-L0 = <1400000>;
+		opp-microvolt-L1 = <1375000>;
+		opp-microvolt-L2 = <1350000>;
+		opp-microvolt-L3 = <1325000>;
+		clock-latency-ns = <40000>;
 	};
 };
 
