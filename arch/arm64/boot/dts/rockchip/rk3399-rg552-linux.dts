@@ -587,8 +587,8 @@
 		clock-latency-ns = <0x9c40>;
 	};
 
-	opp-2208000000 {
-		opp-hz = <0x00 0x839b6800>;
+	opp-210000000 {
+		opp-hz = <0x00 0xC845880>;
 		opp-microvolt = <0x149970>;
 		opp-microvolt-L0 = <0x149970>;
 		opp-microvolt-L1 = <0x149970>;
