@@ -576,8 +576,6 @@
             opp-hz = /bits/ 64 <1704000000>;
             opp-microvolt = <1225000>;
         };
-    };
-
 };
 
 &cluster1_opp {
