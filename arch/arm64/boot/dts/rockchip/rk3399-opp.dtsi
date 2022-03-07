@@ -336,7 +336,6 @@
         opp-1100000000 {
             opp-hz = /bits/ 64 <1100000000>;
             opp-microvolt = <1275000>;
-        };
 	};
 
 	dmc_opp_table: opp-table3 {
