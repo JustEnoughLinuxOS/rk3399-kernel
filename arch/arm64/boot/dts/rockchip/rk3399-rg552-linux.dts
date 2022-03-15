@@ -34,6 +34,7 @@
 				linux,code = <KEY_VOLUMEDOWN>;
 				gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_LOW>;
 			};
+
 	};
 
 	joypad: singleadc-joypad {
@@ -753,7 +754,7 @@
 		};
 
 		route_dp: route-dp {
-                        status = "okay";
+                        status = "disabled";
 			connect = <&vopl_out_dp>;
 		};
 	};
@@ -941,11 +942,9 @@
 				regulator-name = "vcca3v0_codec";
 				regulator-min-microvolt = <3000000>;
 				regulator-max-microvolt = <3000000>;
-				regulator-always-on;
 				regulator-boot-on;
 				regulator-state-mem {
-					regulator-on-in-suspend;
-					regulator-suspend-microvolt = <3000000>;
+					regulator-off-in-suspend;
 				};
 			};
 
@@ -1037,7 +1036,7 @@
 		compatible = "fairchild,fusb302";
 		reg = <0x22>;
 		fusb302,role = "ROLE_MODE_DRP";
-		pinctrl-names = "default";
+		pinctrl-names = "default", "sleep";
 		pinctrl-0 = <&fusb0_int>;
 		vbus-5v-gpios = <&gpio1 RK_PA3 GPIO_ACTIVE_HIGH>;
 		int-n-gpios = <&gpio1 RK_PA2 GPIO_ACTIVE_HIGH>;
@@ -1469,6 +1468,10 @@
 			rockchip,pins =
 				<1 RK_PA2 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
+		fusb0_int_sleep: fusb0-int-sleep {
+			rockchip,pins =
+				<1 RK_PA2 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
 	};
 
 	gmac {
@@ -1586,7 +1589,7 @@
 
 &rockchip_suspend {
 	status = "okay";
-	rockchip,sleep-debug-en = <1>;
+	rockchip,sleep-debug-en = <0>;
 	rockchip,sleep-mode-config = <
 		(0
 		| RKPM_SLP_ARMPD
