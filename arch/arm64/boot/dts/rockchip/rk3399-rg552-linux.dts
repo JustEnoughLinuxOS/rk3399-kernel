@@ -942,6 +942,7 @@
 				regulator-name = "vcca3v0_codec";
 				regulator-min-microvolt = <3000000>;
 				regulator-max-microvolt = <3000000>;
+				regulator-always-on;
 				regulator-boot-on;
 				regulator-state-mem {
 					regulator-off-in-suspend;
