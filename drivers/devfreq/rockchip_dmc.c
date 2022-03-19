@@ -1421,8 +1421,8 @@ static int rockchip_dmcfreq_target(struct device *dev, unsigned long *freq,
 
 	/* If get the incorrect rate, set voltage to old value. */
 	if (dmcfreq->rate != target_rate) {
-		dev_err(dev, "Get wrong frequency, Request %lu, Current %lu\n",
-			target_rate, dmcfreq->rate);
+		//dev_err(dev, "Get wrong frequency, Request %lu, Current %lu\n",
+		//	target_rate, dmcfreq->rate);
 		regulator_set_voltage(dmcfreq->vdd_center, dmcfreq->volt,
 				      INT_MAX);
 		goto out;
