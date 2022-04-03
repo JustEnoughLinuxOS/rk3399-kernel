@@ -1276,7 +1276,7 @@
 	supports-emmc;
 	non-removable;
 //	keep-power-in-suspend;
-	status = "okay";
+	status = "disabled";
 };
 
 &threshold {
